@@ -3,7 +3,7 @@ from typing import Dict,Optional
 #pydantic
 from pydantic import BaseModel
 #FastAPI
-from fastapi import FastAPI,Body,Query
+from fastapi import FastAPI,Body,Query,Path
 # Models
 class Person(BaseModel):
     name: str
@@ -23,7 +23,29 @@ def create_person(person: Person = Body(...)):
 # Validations of Query parameters
 @app.get("/person/detail")
 def show_person(
-    name: Optional[str] = Query(None,min_length=1,max_length=50),
-    age: str = Query(...)
+    name: Optional[str] = Query(
+        None,
+        min_length=1,
+        max_length=50,
+        title= "Person Name",
+        description= "This is the name of the person, its between 1 and 50 characters"
+    ),
+    age: str = Query(
+        ...,
+        title= "Person Age",
+        description= "This is the age of the person, its REQUIRED"
+    )
 ):
     return {name: age}
+#Validations: path parameters
+@app.get("/person/detail/{person_id}")
+def show_person(
+    person_id: int = Path(
+        ...,
+        gt=0,
+        title="Person Id",
+        description= "This is the id of the person, must be greater than zero.",
+    )
+):
+    return {person_id: "Exist!!"}
+
