@@ -47,6 +47,14 @@ class Location(BaseModel):
         title="Country",
         description=" This the Country where person lives",
         )
+    class Config:
+        schema_extra={
+            "example": {
+                "city": " My City",
+                "state": "My State",
+                "country": "My Country",
+        }
+        }
 class Person(BaseModel):
     name: str = Field(
         ...,
@@ -71,6 +79,18 @@ class Person(BaseModel):
     favourite_color: Color = Field(default=None)
     hair_color: Optional[HairColor] = Field(default = None)
     is_married: Optional[bool] = Field(default = None)
+    class Config:
+        schema_extra = {
+            "example":{
+                "name": "Erick",
+                "last_name": "Escobar",
+                "age": 23,
+                "email": "e@e.e",
+                "favourite_color": "orange",
+                "hair_color":"Black",
+                "is_married": False,
+            }
+        }
 app:FastAPI = FastAPI()
 #Metodos
 @app.get("/")
