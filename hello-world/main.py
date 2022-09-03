@@ -1,10 +1,23 @@
 #Python
-from typing import Dict,Optional
+from typing import (
+    Dict,
+    Optional,
+)
 from enum import Enum
 #pydantic
-from pydantic import BaseModel,Field
+from pydantic import (
+    BaseModel,
+    Field,
+    EmailStr,
+)
+from pydantic.color import Color
 #FastAPI
-from fastapi import FastAPI,Body,Query,Path
+from fastapi import (
+    FastAPI,
+    Body,
+    Query,
+    Path,
+)
 # Models
 class HairColor(str,Enum):
     white = "White"
@@ -13,9 +26,27 @@ class HairColor(str,Enum):
     gray = "Gray"
     red = "Red"
 class Location(BaseModel):
-    city:str
-    state:str
-    country:str
+    city:str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        title="City",
+        description=" This the City where person lives",
+        )
+    state:str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        title="State",
+        description=" This the State where person lives",
+        )
+    country:str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        title="Country",
+        description=" This the Country where person lives",
+        )
 class Person(BaseModel):
     name: str = Field(
         ...,
@@ -32,6 +63,12 @@ class Person(BaseModel):
         gt=0,
         le=115
     )
+    email: EmailStr = Field(
+        ...,
+        title="Email",
+        description=" This the Email of the person",
+    )
+    favourite_color: Color = Field(default=None)
     hair_color: Optional[HairColor] = Field(default = None)
     is_married: Optional[bool] = Field(default = None)
 app:FastAPI = FastAPI()
