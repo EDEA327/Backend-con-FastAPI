@@ -108,12 +108,14 @@ def show_person(
         min_length=1,
         max_length=50,
         title= "Person Name",
-        description= "This is the name of the person, its between 1 and 50 characters"
+        description= "This is the name of the person",
+        example="Erick",
     ),
     age: str = Query(
         ...,
         title= "Person Age",
-        description= "This is the age of the person, its REQUIRED"
+        description= "This is the age of the person",
+        example=25,
     )
 ):
     return {name: age}
@@ -125,6 +127,7 @@ def show_person(
         gt=0,
         title="Person Id",
         description= "This is the id of the person, must be greater than zero.",
+        example=123,
     )
 ):
     return {person_id: "Exist!!"}
@@ -135,10 +138,11 @@ def update_person(
         ...,
         title="Person Id",
         description= "This is the id of the person, must be greater than zero.",
-        gt=0
+        gt=0,
+        example=123,
     ),
     person: Person = Body(...),
-    location:Location = Body(...)
+    location:Location = Body(...),
 
 ):
     results = person.dict()
