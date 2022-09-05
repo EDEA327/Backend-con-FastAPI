@@ -55,7 +55,7 @@ class Location(BaseModel):
                 "country": "My Country",
         }
         }
-class Person(BaseModel):
+class PersonBase(BaseModel):
     name: str = Field(
         ...,
         min_length=1,
@@ -83,12 +83,6 @@ class Person(BaseModel):
     favourite_color: Optional[Color] = Field(default=None,example="Red")
     hair_color: Optional[HairColor] = Field(default = None)
     is_married: Optional[bool] = Field(default = None)
-    password: str = Field(
-        ...,
-        min_length = 8,
-        max_length = 64,
-        example="password",
-        )
 
     name: str = Field(
         ...,
@@ -114,10 +108,19 @@ class Person(BaseModel):
         description=" This the Email of the person",
         example="user@example.com",
     )
-    favourite_color: Color = Field(default=None)
+    favourite_color: Color = Field(default=None,example="Red")
     hair_color: Optional[HairColor] = Field(default = None)
     is_married: Optional[bool] = Field(default = None)
 
+class Person(PersonBase):
+    password: str = Field(
+        ...,
+        min_length = 8,
+        max_length = 64,
+        example="password",
+        )
+class PersonOut(PersonBase):
+    pass
 app:FastAPI = FastAPI()
 #Metodos
 @app.get("/")
@@ -126,8 +129,7 @@ def home() -> Dict:
 # Request and response body
 @app.post(
     "/person/new",
-    response_model = Person,
-    response_model_exclude={"password"},
+    response_model = PersonOut,
     )
 def create_person(person: Person = Body(...)):
     return person
@@ -149,7 +151,7 @@ def show_person(
         example=25,
     )
 ):
-    return {name: age}
+    return {name : age}
 #Validations: path parameters
 @app.get("/person/detail/{person_id}")
 def show_person(
