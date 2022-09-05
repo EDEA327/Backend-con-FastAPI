@@ -16,6 +16,7 @@ from fastapi import (
     FastAPI,
     status,
     UploadFile,
+    HTTPException,
     Body,
     Query,
     Path,
@@ -175,6 +176,9 @@ def show_person(
 ):
     return {name : age}
 #Validations: path parameters
+
+persons = [1,2,3,4,5,6]
+
 @app.get(
     path="/person/detail/{person_id}",
     status_code=status.HTTP_200_OK)
@@ -187,6 +191,11 @@ def show_person(
         example=123,
     )
 ):
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This person does not exist!!!"
+        )
     return {person_id: "Exist!!"}
 # Validations: Body parameters (Request body)
 @app.put(
