@@ -14,10 +14,11 @@ from pydantic.color import Color
 #FastAPI
 from fastapi import (
     FastAPI,
+    status,
     Body,
     Query,
     Path,
-    status,
+    Form,
 )
 # Models
 class HairColor(str,Enum):
@@ -122,6 +123,14 @@ class Person(PersonBase):
         )
 class PersonOut(PersonBase):
     pass
+
+class LoginOut(BaseModel):
+    username: str = Field(
+        ...,
+        max_length=20,
+        example="juanito2022",
+    )
+    message: str = Field(default="Login Successful")
 app:FastAPI = FastAPI()
 #Metodos
 @app.get(
@@ -195,3 +204,13 @@ def update_person(
     results = person.dict()
     results.update(location.dict())
     return results
+@app.post(
+    path='/login',
+    #response_model=LoginOut
+    status_code=status.HTTP_200_OK
+)
+def login(
+    username:str = Form(...),
+    password:str = Form(...)
+):
+    return LoginOut(username=username)
