@@ -59,45 +59,76 @@ class Person(BaseModel):
     name: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Erick",
     )
     last_name: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Escobar",
     )
     age: int = Field(
         ...,
         gt=0,
-        le=115
+        le=115,
+        example=23,
     )
     email: EmailStr = Field(
         ...,
         title="Email",
         description=" This the Email of the person",
+        example="user@example.com",
+    )
+    favourite_color: Optional[Color] = Field(default=None,example="Red")
+    hair_color: Optional[HairColor] = Field(default = None)
+    is_married: Optional[bool] = Field(default = None)
+    password: str = Field(
+        ...,
+        min_length = 8,
+        max_length = 64,
+        example="password",
+        )
+
+    name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example="Erick",
+    )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example="Escobar",
+    )
+    age: int = Field(
+        ...,
+        gt=0,
+        le=115,
+        example=23,
+    )
+    email: EmailStr = Field(
+        ...,
+        title="Email",
+        description=" This the Email of the person",
+        example="user@example.com",
     )
     favourite_color: Color = Field(default=None)
     hair_color: Optional[HairColor] = Field(default = None)
     is_married: Optional[bool] = Field(default = None)
-    class Config:
-        schema_extra = {
-            "example":{
-                "name": "Erick",
-                "last_name": "Escobar",
-                "age": 23,
-                "email": "e@e.e",
-                "favourite_color": "orange",
-                "hair_color":"Black",
-                "is_married": False,
-            }
-        }
+
 app:FastAPI = FastAPI()
 #Metodos
 @app.get("/")
 def home() -> Dict:
     return {"Hello": "world"}
 # Request and response body
-@app.post("/person/new")
+@app.post(
+    "/person/new",
+    response_model = Person,
+    response_model_exclude={"password"},
+    )
 def create_person(person: Person = Body(...)):
     return person
 # Validations of Query parameters
