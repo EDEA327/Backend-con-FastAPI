@@ -185,7 +185,8 @@ def create_person(person: Person = Body(...)):
     path="/person/detail",
     status_code=status.HTTP_200_OK,
     tags=["Persons"],
-    summary="Shows the name and age of the person"
+    summary="Shows the name and age of the person",
+    deprecated=True
     )
 def show_person(
     name: str = Query(
@@ -225,7 +226,7 @@ persons = [1,2,3,4,5,6]
     tags=["Persons"],
     summary="Validate if a person ID exists in the database"
     )
-def person_id(
+def show_person(
     person_id: int = Path(
         ...,
         gt=0,
