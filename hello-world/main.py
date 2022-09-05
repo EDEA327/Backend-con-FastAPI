@@ -17,6 +17,7 @@ from fastapi import (
     Body,
     Query,
     Path,
+    status,
 )
 # Models
 class HairColor(str,Enum):
@@ -108,7 +109,7 @@ class PersonBase(BaseModel):
         description=" This the Email of the person",
         example="user@example.com",
     )
-    favourite_color: Color = Field(default=None,example="Red")
+    favourite_color: Optional[Color] = Field(default=None,example="Red")
     hair_color: Optional[HairColor] = Field(default = None)
     is_married: Optional[bool] = Field(default = None)
 
@@ -123,18 +124,26 @@ class PersonOut(PersonBase):
     pass
 app:FastAPI = FastAPI()
 #Metodos
-@app.get("/")
+@app.get(
+    path="/",
+    status_code=status.HTTP_200_OK,
+    )
+
 def home() -> Dict:
     return {"Hello": "world"}
 # Request and response body
 @app.post(
-    "/person/new",
+    path="/person/new",
     response_model = PersonOut,
+    status_code=status.HTTP_201_CREATED,
     )
 def create_person(person: Person = Body(...)):
     return person
 # Validations of Query parameters
-@app.get("/person/detail")
+@app.get(
+    path="/person/detail",
+    status_code=status.HTTP_200_OK,
+    )
 def show_person(
     name: Optional[str] = Query(
         None,
@@ -153,7 +162,9 @@ def show_person(
 ):
     return {name : age}
 #Validations: path parameters
-@app.get("/person/detail/{person_id}")
+@app.get(
+    path="/person/detail/{person_id}",
+    status_code=status.HTTP_200_OK)
 def show_person(
     person_id: int = Path(
         ...,
@@ -165,7 +176,10 @@ def show_person(
 ):
     return {person_id: "Exist!!"}
 # Validations: Body parameters (Request body)
-@app.put("/person/{person_id}")
+@app.put(
+    path="/person/{person_id}",
+    status_code=status.HTTP_201_CREATED,
+    )
 def update_person(
     person_id: int = Path(
         ...,
