@@ -40,7 +40,7 @@ class User(UserBase):
         max_length = 50,
         example = "Escobar"
         )
-    birth_date: Optional[date] = Field(default=NullHandler.birth_date)
+    birth_date: Optional[date] = Field(default= None)
 class UserRegister(User,UserLogin):
     pass
 class Tweets(BaseModel):
@@ -49,7 +49,7 @@ class Tweets(BaseModel):
         ...,
         min_length = 1,
         max_length = 256,
-        examples = "Este es un tweet"
+        example = "Este es un tweet"
         )
     created_at: datetime = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=None)
@@ -186,8 +186,35 @@ def home():
     summary="Post a tweet",
     tags=["Tweets"]
 )
-def post():
-    pass
+def post(tweet: Tweets = Body(...)):
+    """
+    Post a Tweet
+    This path operation post a tweet in the app
+    Parameters:
+        - Request body parameter
+            - tweet: Tweets
+
+    Returns a json with the basic tweet information:
+
+        - tweet_id: UUID
+        - content: str
+        - created_at: datetime
+        - updated_at: Optional[datetime]
+        - by: User
+    """
+    with open("tweets.json", "r+", encoding="utf-8") as f:
+        results = json.loads(f.read())
+        tweet_dict = tweet.dict()
+        tweet_dict["tweet_id"] = str(tweet_dict["tweet_id"])
+        tweet_dict["created_at"] = str(tweet_dict["created_at"])
+        tweet_dict["updated_at"] = str(tweet_dict["updated_at"])
+        tweet_dict["by"]["user_id"] = str(tweet_dict["by"]["user_id"])
+        tweet_dict["by"]["birth_date"] = str(tweet_dict["by"]["birth_date"])
+
+        results.append(tweet_dict)
+        f.seek(0)
+        f.write(json.dumps(results))
+        return tweet
 ### Show a tweet
 @app.get(
     path='/tweets/{tweet_id}',
