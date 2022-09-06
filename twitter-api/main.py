@@ -37,7 +37,7 @@ class User(UserBase):
         )
     birth_date: Optional[date] = Field(default=None)
 
-class Tweet(BaseModel):
+class Tweets(BaseModel):
     tweet_id: UUID = Field(...)
     content: str = Field(
         ...,
@@ -50,12 +50,9 @@ class Tweet(BaseModel):
 
 # Path Operations
 
-@app.get(path='/')
-def home():
-    return {"Twitter-API": "Working"}
-
 ## Users
 
+### Register a user
 @app.post(
     path='/signup',
     response_model=User,
@@ -65,6 +62,7 @@ def home():
 )
 def signup():
     pass
+### Login a user
 @app.post(
     path='/login',
     response_model=User,
@@ -74,6 +72,7 @@ def signup():
 )
 def login():
     pass
+### Show all users
 @app.get(
     path='/users',
     response_model=List[User],
@@ -83,6 +82,7 @@ def login():
 )
 def show_all_users():
     pass
+### Show al user
 @app.get(
     path='/users/{user_id}',
     response_model=User,
@@ -92,6 +92,7 @@ def show_all_users():
 )
 def show_a_user():
     pass
+### Delete a user
 @app.delete(
     path='/users/{user_id}',
     response_model=User,
@@ -101,6 +102,7 @@ def show_a_user():
 )
 def delete_a_user():
     pass
+### Update a user
 @app.put(
     path='/users/{user_id}',
     response_model=User,
@@ -110,4 +112,57 @@ def delete_a_user():
 )
 def update_a_user():
     pass
+
+
 ## Tweets
+
+### Show all Tweets
+@app.get(
+    path='/',
+    response_model=List[Tweets],
+    status_code=status.HTTP_200_OK,
+    summary="Show all tweets",
+    tags=["Tweets"]
+)
+def home():
+    return {"Twitter-API": "Working"}
+### Post a tweet
+@app.post(
+    path='/post',
+    response_model=Tweets,
+    status_code=status.HTTP_201_CREATED,
+    summary="Post a tweet",
+    tags=["Tweets"]
+)
+def post():
+    pass
+### Show a tweet
+@app.get(
+    path='/tweets/{tweet_id}',
+    response_model=Tweets,
+    status_code=status.HTTP_200_OK,
+    summary="Shows a tweet",
+    tags=["Tweets"]
+)
+def show_a_tweet():
+    pass
+### Delete a tweet
+@app.delete(
+    path='/tweets/{tweet_id}',
+    response_model=Tweets,
+    status_code=status.HTTP_200_OK,
+    summary="Deletes a tweet",
+    tags=["Tweets"]
+)
+def delete_a_tweet():
+    pass
+### Update a tweet
+@app.put(
+    path='/tweets/{tweet_id}',
+    response_model=Tweets,
+    status_code=status.HTTP_200_OK,
+    summary="Updates a tweet",
+    tags=["Tweets"]
+)
+def update_a_tweet():
+    pass
