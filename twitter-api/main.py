@@ -1,4 +1,5 @@
 # Python
+import json
 from uuid import UUID
 from datetime import date,datetime
 from typing import Optional,List
@@ -9,6 +10,7 @@ from pydantic import Field
 #FastAPI
 from fastapi import FastAPI
 from fastapi import status
+from fastapi import Body
 
 app = FastAPI()
 
@@ -21,28 +23,33 @@ class UserBase(BaseModel):
 class UserLogin(UserBase):
     password: str = Field(
         ...,
-        min_length=8
+        min_length = 8,
+        example = "password"
         )
 
 class User(UserBase):
     first_name: str = Field(
         ...,
-        min_length=1,
-        max_length=50,
+        min_length = 1,
+        max_length = 50,
+        example = "Erick"
         )
     last_name: str = Field(
         ...,
-        min_length=1,
-        max_length=50,
+        min_length = 1,
+        max_length = 50,
+        example = "Escobar"
         )
     birth_date: Optional[date] = Field(default=None)
-
+class UserRegister(User,UserLogin):
+    pass
 class Tweets(BaseModel):
     tweet_id: UUID = Field(...)
     content: str = Field(
         ...,
-        min_length=1,
-        max_length=256
+        min_length = 1,
+        max_length = 256,
+        examples = "Este es un tweet"
         )
     created_at: datetime = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=None)
@@ -60,8 +67,36 @@ class Tweets(BaseModel):
     summary="Register a user",
     tags=["Users"]
 )
-def signup():
-    pass
+def signup(user:UserRegister = Body(...)):
+    """
+    Signup
+
+    This path operation registers a user in the app
+
+    Parameters:
+
+        -Request body parameters
+            -user: UserRegister
+
+    Returns: A json with the basic user information:
+
+        -user_id: UUID
+        -email: EmailStr
+        -first_name: str
+        -birth_date: date
+    """
+    with open("user.json","r+",encoding="utf-8") as f:
+        results = json.loads(f.read())
+        user_dict = user.dict()
+        user_dict["user_id"] = str(user_dict["user_id"])
+        user_dict["birth_date"] = str(user_dict["birth_date"])
+        results.append(user_dict)
+        f.seek(0)
+        f.write(json.dumps(results))
+        return user
+
+
+
 ### Login a user
 @app.post(
     path='/login',
