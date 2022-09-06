@@ -40,7 +40,7 @@ class User(UserBase):
         max_length = 50,
         example = "Escobar"
         )
-    birth_date: Optional[date] = Field(default=None)
+    birth_date: Optional[date] = Field(default=NullHandler.birth_date)
 class UserRegister(User,UserLogin):
     pass
 class Tweets(BaseModel):
@@ -110,14 +110,31 @@ def login():
 ### Show all users
 @app.get(
     path='/users',
-    response_model=List[User],
+    #response_model=List[User],
     status_code=status.HTTP_200_OK,
     summary="Show all users",
     tags=["Users"]
 )
 def show_all_users():
-    pass
-### Show al user
+    """
+    This path operation shows all users
+
+    Parameters:
+        -
+
+    Returns a json list with all users in the app with the following attributes:
+
+        - user_id: UUID
+        - email: EmailStr
+        - first_name: str
+        - last_name: str
+        - birth_date: date
+
+    """
+    with open("user.json","r",encoding="utf-8") as f:
+        results = json.loads(f.read())
+        return results
+### Show a user
 @app.get(
     path='/users/{user_id}',
     response_model=User,
