@@ -295,33 +295,6 @@ def update_a_user(
 
 ## Tweets
 
-### Show all Tweets
-@app.get(
-    path='/',
-    response_model=List[Tweets],
-    status_code=status.HTTP_200_OK,
-    summary="Show all tweets",
-    tags=["Tweets"]
-)
-def home():
-    """
-    Post a Tweet
-    This path operation shows all tweets in the app
-
-    Parameters:
-        -
-
-    Returns a json with the basic tweet information:
-
-        - tweet_id: UUID
-        - content: str
-        - created_at: datetime
-        - updated_at: Optional[datetime]
-        - by: User
-    """
-    with open("tweets.json","r",encoding="utf-8") as f:
-        results = json.loads(f.read())
-        return results
 ### Post a tweet
 @app.post(
     path='/post',
@@ -359,6 +332,34 @@ def post(tweet: Tweets = Body(...)):
         f.seek(0)
         f.write(json.dumps(results))
         return tweet
+### Show all Tweets
+@app.get(
+    path='/',
+    response_model=List[Tweets],
+    status_code=status.HTTP_200_OK,
+    summary="Show all tweets",
+    tags=["Tweets"]
+)
+def home():
+    """
+    Post a Tweet
+    This path operation shows all tweets in the app
+
+    Parameters:
+        -
+
+    Returns a json with the basic tweet information:
+
+        - tweet_id: UUID
+        - content: str
+        - created_at: datetime
+        - updated_at: Optional[datetime]
+        - by: User
+    """
+    with open("tweets.json","r",encoding="utf-8") as f:
+        results = json.loads(f.read())
+        return results
+
 ### Show a tweet
 @app.get(
     path='/tweets/{tweet_id}',
